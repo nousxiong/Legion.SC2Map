@@ -2,6 +2,7 @@
 Category/Name/494D8FAE=Definitions
 Category/Name/980C368C=Triggers
 Category/Name/BE1A2301=Variables
+Category/Name/lib_3_6053C4FF=Cohort
 FunctionDef/Hint/lib_3_28396AD0=根据军团内士兵数量缩放镜头
 FunctionDef/Hint/lib_3_80F13071=实时生产士兵直到上限
 FunctionDef/Hint/lib_3_BDBE30C8=是否当前能够跟随master

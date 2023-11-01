@@ -2015,6 +2015,7 @@
     </Library>
     <Library Id="3">
         <Root>
+            <Item Type="Category" Library="3" Id="6053C4FF"/>
             <Item Type="Comment" Library="3" Id="58713869"/>
             <Item Type="FunctionDef" Library="3" Id="80F13071"/>
             <Item Type="Trigger" Library="3" Id="4FD13FA5"/>
@@ -2028,6 +2029,17 @@
             <Item Type="Variable" Library="3" Id="9733402E"/>
             <Item Type="Variable" Library="3" Id="4488C467"/>
         </Root>
+        <Element Type="Category" Id="6053C4FF">
+            <Item Type="Comment" Library="3" Id="28E0CD16"/>
+        </Element>
+        <Element Type="Comment" Id="28E0CD16">
+            <Comment>
+                大队控制：
+                1、生产士兵直到上限
+                2、大队行为脚本
+                3、百夫长（Centurion，大队的领导）行为脚本
+            </Comment>
+        </Element>
         <Element Type="Comment" Id="58713869">
             <Comment>
                 军团控制：
