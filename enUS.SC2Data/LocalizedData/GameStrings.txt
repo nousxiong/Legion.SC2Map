@@ -1,0 +1,10 @@
+﻿DocInfo/DescLong=Completely devoid of any description whatsoever.
+DocInfo/DescShort=Any
+DocInfo/Name=Just Another StarCraft II Map
+MapInfo/Player00/Name=Neutral
+MapInfo/Player01/Name=Player 1
+MapInfo/Player02/Name=Hostile
+Param/Expression/79738242=初始化相机：~A~,~B~
+Param/Value/62FD62F9=设置镜头和移动控制
+Param/Value/656FDD14=设置测试目标生成器
+Param/Value/EFEA1A86=初始化主角

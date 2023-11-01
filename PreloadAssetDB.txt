@@ -1,0 +1,6 @@
+[Weapon]
+id=Claws
+asset=Assets\Textures\btn-upgrade-zerg-meleeattacks-level0.dds
+Actor=CommandUIHarnessAttackProtoss,CommandUIHarnessAttackTerran,CommandUIHarnessAttackZerg,CommandUIHarnessConfirmProtoss,CommandUIHarnessConfirmTerran,CommandUIHarnessConfirmZerg,CommandUIHarnessMoveProtoss,CommandUIHarnessMoveTerran,CommandUIHarnessMoveZerg,CommandUIHarnessRallyProtoss,CommandUIHarnessRallyTerran,CommandUIHarnessRallyZerg,TerrainMgr,ZerglingAttackStart
+Effect=##id##,HotSZergling##id##
+

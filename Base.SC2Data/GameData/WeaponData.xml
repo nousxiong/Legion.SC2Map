@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Catalog>
+    <CWeaponLegacy id="Claws">
+        <MinScanRange value="15"/>
+    </CWeaponLegacy>
+</Catalog>

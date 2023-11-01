@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Preload>
+<Abil id="attack"/>
+<Actor id="SYSTEM_ActorConfig"/>
+<Terrain id="Zerus"/>
+<Unit id="Marine"/>
+<Unit id="Zergling"/>
+<Unit id="SwarmQueen"/>
+</Preload>

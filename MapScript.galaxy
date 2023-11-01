@@ -1,0 +1,768 @@
+//==================================================================================================
+// 
+// Generated Map Script
+// 
+// Name:   Just Another StarCraft II Map
+// 
+//==================================================================================================
+include "TriggerLibs/NativeLib"
+
+//--------------------------------------------------------------------------------------------------
+// Library: Camera
+//--------------------------------------------------------------------------------------------------
+// Variable Declarations
+bool lib1_gv_cameraAerialViewing;
+unit lib1_gv_cameraTarget;
+fixed lib1_gv_cameraInitDistance;
+fixed lib1_gv_cameraDistance;
+fixed lib1_gv_cameraMaxDistance;
+
+// Function Declarations
+void lib1_gf_FollowTargetThread ();
+void lib1_gf_ScaleUpCamera (fixed lp_scaling);
+bool lib1_gf_IsAerialViewing ();
+
+// Trigger Declarations
+trigger lib1_gt_AerialViewOn;
+trigger lib1_gt_AerialViewOff;
+
+// Library Initialization
+void lib1_InitVariables ();
+
+//--------------------------------------------------------------------------------------------------
+// Library: Camera
+//--------------------------------------------------------------------------------------------------
+// External Library Initialization
+void lib1_InitLibraries () {
+    libNtve_InitVariables();
+}
+
+// Variable Initialization
+bool lib1_InitVariables_completed = false;
+
+void lib1_InitVariables () {
+    if (lib1_InitVariables_completed) {
+        return;
+    }
+
+    lib1_InitVariables_completed = true;
+
+    lib1_gv_cameraInitDistance = CameraGetDistance(1);
+}
+
+// Functions
+trigger auto_lib1_gf_FollowTargetThread_Trigger = null;
+
+void lib1_gf_FollowTargetThread () {
+    if (auto_lib1_gf_FollowTargetThread_Trigger == null) {
+        auto_lib1_gf_FollowTargetThread_Trigger = TriggerCreate("auto_lib1_gf_FollowTargetThread_TriggerFunc");
+    }
+
+    TriggerExecute(auto_lib1_gf_FollowTargetThread_Trigger, false, false);
+}
+
+bool auto_lib1_gf_FollowTargetThread_TriggerFunc (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Implementation
+    while (true) {
+        CameraPan(1, UnitGetPosition(lib1_gv_cameraTarget), 0.0625, -1, 0.0, false);
+        Wait(0.0, c_timeGame);
+    }
+    return true;
+}
+
+void lib1_gf_ScaleUpCamera (fixed lp_scaling) {
+    // Variable Declarations
+    fixed lv_realScaling;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+    lv_realScaling = 1.0;
+
+    // Implementation
+    lv_realScaling += lp_scaling;
+    if ((lv_realScaling < 1)) {
+        lv_realScaling = 1.0;
+    }
+
+    lib1_gv_cameraDistance = (lib1_gv_cameraInitDistance*lv_realScaling);
+    CameraSetValue(1, c_cameraValueDistance, lib1_gv_cameraDistance, 0.2, -1, 0.0);
+}
+
+bool lib1_gf_IsAerialViewing () {
+    // Automatic Variable Declarations
+    // Implementation
+    return lib1_gv_cameraAerialViewing;
+}
+
+// Triggers
+//--------------------------------------------------------------------------------------------------
+// Trigger: AerialViewOn
+//--------------------------------------------------------------------------------------------------
+bool lib1_gt_AerialViewOn_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    lib1_gv_cameraAerialViewing = true;
+    CameraSetValue(1, c_cameraValueDistance, lib1_gv_cameraMaxDistance, 0.3, -1, 0.0);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void lib1_gt_AerialViewOn_Init () {
+    lib1_gt_AerialViewOn = TriggerCreate("lib1_gt_AerialViewOn_Func");
+    TriggerAddEventKeyPressed(lib1_gt_AerialViewOn, 1, c_keySpace, true, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: AerialViewOff
+//--------------------------------------------------------------------------------------------------
+bool lib1_gt_AerialViewOff_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    CameraSetValue(1, c_cameraValueDistance, lib1_gv_cameraDistance, 0.3, -1, 0.0);
+    lib1_gv_cameraAerialViewing = false;
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void lib1_gt_AerialViewOff_Init () {
+    lib1_gt_AerialViewOff = TriggerCreate("lib1_gt_AerialViewOff_Func");
+    TriggerAddEventKeyPressed(lib1_gt_AerialViewOff, 1, c_keySpace, false, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+}
+
+void lib1_InitTriggers () {
+    lib1_gt_AerialViewOn_Init();
+    lib1_gt_AerialViewOff_Init();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library Initialization
+//--------------------------------------------------------------------------------------------------
+bool lib1_InitLib_completed = false;
+
+void lib1_InitLib () {
+    if (lib1_InitLib_completed) {
+        return;
+    }
+
+    lib1_InitLib_completed = true;
+
+    lib1_InitLibraries();
+    lib1_InitVariables();
+    lib1_InitTriggers();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library: Wasd
+//--------------------------------------------------------------------------------------------------
+// Variable Declarations
+unit lib4_gv_wasdUnit;
+bool[4] lib4_gv_kEYPRESS;
+point lib4_gv_movePoint;
+
+// Function Declarations
+void lib4_gf_KeyPressDetectThread ();
+void lib4_gf_ExecuteMove (fixed lp_angle, fixed lp_offset);
+bool lib4_gf_IsMovingCtrl ();
+
+// Trigger Declarations
+trigger lib4_gt_KeyPressDOWN;
+trigger lib4_gt_KeyPressUP;
+
+// Library Initialization
+void lib4_InitVariables ();
+
+//--------------------------------------------------------------------------------------------------
+// Library: Wasd
+//--------------------------------------------------------------------------------------------------
+// External Library Initialization
+void lib4_InitLibraries () {
+    libNtve_InitVariables();
+}
+
+// Variable Initialization
+bool lib4_InitVariables_completed = false;
+
+void lib4_InitVariables () {
+    if (lib4_InitVariables_completed) {
+        return;
+    }
+
+    lib4_InitVariables_completed = true;
+
+}
+
+// Functions
+trigger auto_lib4_gf_KeyPressDetectThread_Trigger = null;
+
+void lib4_gf_KeyPressDetectThread () {
+    if (auto_lib4_gf_KeyPressDetectThread_Trigger == null) {
+        auto_lib4_gf_KeyPressDetectThread_Trigger = TriggerCreate("auto_lib4_gf_KeyPressDetectThread_TriggerFunc");
+    }
+
+    TriggerExecute(auto_lib4_gf_KeyPressDetectThread_Trigger, false, false);
+}
+
+bool auto_lib4_gf_KeyPressDetectThread_TriggerFunc (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Implementation
+    while ((UnitIsAlive(lib4_gv_wasdUnit) == true)) {
+        if ((lib4_gv_kEYPRESS[0] == false) && (lib4_gv_kEYPRESS[1] == false) && (lib4_gv_kEYPRESS[2] == false) && (lib4_gv_kEYPRESS[3] == false)) {
+            UnitIssueOrder(lib4_gv_wasdUnit, Order(AbilityCommand("stop", 0)), c_orderQueueReplace);
+        }
+        else if ((lib4_gv_kEYPRESS[0] == true) && (lib4_gv_kEYPRESS[1] == true)) {
+            lib4_gf_ExecuteMove(145.0, 1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[0] == true) && (lib4_gv_kEYPRESS[3] == true)) {
+            lib4_gf_ExecuteMove(45.0, 1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[2] == true) && (lib4_gv_kEYPRESS[1] == true)) {
+            lib4_gf_ExecuteMove(45.0, -1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[2] == true) && (lib4_gv_kEYPRESS[3] == true)) {
+            lib4_gf_ExecuteMove(145.0, -1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[0] == true)) {
+            lib4_gf_ExecuteMove(90.0, 1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[1] == true)) {
+            lib4_gf_ExecuteMove(180.0, 1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[2] == true)) {
+            lib4_gf_ExecuteMove(90.0, -1.0);
+        }
+        else if ((lib4_gv_kEYPRESS[3] == true)) {
+            lib4_gf_ExecuteMove(0.0, 1.0);
+        }
+        Wait(0.0, c_timeGame);
+    }
+    return true;
+}
+
+void lib4_gf_ExecuteMove (fixed lp_angle, fixed lp_offset) {
+    // Automatic Variable Declarations
+    // Implementation
+    lib4_gv_movePoint = PointWithOffsetPolar(UnitGetPosition(lib4_gv_wasdUnit), lp_offset, lp_angle);
+    UnitIssueOrder(lib4_gv_wasdUnit, OrderTargetingPoint(AbilityCommand("move", 0), lib4_gv_movePoint), c_orderQueueReplace);
+}
+
+bool lib4_gf_IsMovingCtrl () {
+    // Automatic Variable Declarations
+    // Implementation
+    if (((lib4_gv_kEYPRESS[0] == true) || (lib4_gv_kEYPRESS[1] == true) || (lib4_gv_kEYPRESS[2] == true) || (lib4_gv_kEYPRESS[3] == true))) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+// Triggers
+//--------------------------------------------------------------------------------------------------
+// Trigger: KeyPressDOWN
+//--------------------------------------------------------------------------------------------------
+bool lib4_gt_KeyPressDOWN_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    int auto34B8120E_val;
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    auto34B8120E_val = EventKeyPressed();
+    if (auto34B8120E_val == c_keyW) {
+        lib4_gv_kEYPRESS[0] = true;
+    }
+    else if (auto34B8120E_val == c_keyA) {
+        lib4_gv_kEYPRESS[1] = true;
+    }
+    else if (auto34B8120E_val == c_keyS) {
+        lib4_gv_kEYPRESS[2] = true;
+    }
+    else if (auto34B8120E_val == c_keyD) {
+        lib4_gv_kEYPRESS[3] = true;
+    }
+    else {
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void lib4_gt_KeyPressDOWN_Init () {
+    lib4_gt_KeyPressDOWN = TriggerCreate("lib4_gt_KeyPressDOWN_Func");
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressDOWN, c_playerAny, c_keyW, true, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressDOWN, c_playerAny, c_keyA, true, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressDOWN, c_playerAny, c_keyS, true, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressDOWN, c_playerAny, c_keyD, true, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: KeyPressUP
+//--------------------------------------------------------------------------------------------------
+bool lib4_gt_KeyPressUP_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    int auto3B78374F_val;
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    auto3B78374F_val = EventKeyPressed();
+    if (auto3B78374F_val == c_keyW) {
+        lib4_gv_kEYPRESS[0] = false;
+    }
+    else if (auto3B78374F_val == c_keyA) {
+        lib4_gv_kEYPRESS[1] = false;
+    }
+    else if (auto3B78374F_val == c_keyS) {
+        lib4_gv_kEYPRESS[2] = false;
+    }
+    else if (auto3B78374F_val == c_keyD) {
+        lib4_gv_kEYPRESS[3] = false;
+    }
+    else {
+    }
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void lib4_gt_KeyPressUP_Init () {
+    lib4_gt_KeyPressUP = TriggerCreate("lib4_gt_KeyPressUP_Func");
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressUP, c_playerAny, c_keyW, false, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressUP, c_playerAny, c_keyA, false, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressUP, c_playerAny, c_keyS, false, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+    TriggerAddEventKeyPressed(lib4_gt_KeyPressUP, c_playerAny, c_keyD, false, c_keyModifierStateIgnore, c_keyModifierStateIgnore, c_keyModifierStateIgnore);
+}
+
+void lib4_InitTriggers () {
+    lib4_gt_KeyPressDOWN_Init();
+    lib4_gt_KeyPressUP_Init();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library Initialization
+//--------------------------------------------------------------------------------------------------
+bool lib4_InitLib_completed = false;
+
+void lib4_InitLib () {
+    if (lib4_InitLib_completed) {
+        return;
+    }
+
+    lib4_InitLib_completed = true;
+
+    lib4_InitLibraries();
+    lib4_InitVariables();
+    lib4_InitTriggers();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library: Legion
+//--------------------------------------------------------------------------------------------------
+// Variable Declarations
+int lib3_gv_legionMaxSoldierNum;
+unit lib3_gv_legionMaster;
+unitgroup lib3_gv_legionGroup;
+
+// Function Declarations
+void lib3_gf_SpawnSoldiersThread ();
+void lib3_gf_FollowMasterThread ();
+void lib3_gf_AutoScaleCameraThread ();
+void lib3_gf_FollowMaster (point lp_target, unitgroup lp_group);
+void lib3_gf_CreateSoldier ();
+bool lib3_gf_CanFollowMaster (unit lp_soldier);
+
+// Trigger Declarations
+trigger lib3_gt_SoldierAttack;
+
+// Library Initialization
+void lib3_InitVariables ();
+
+//--------------------------------------------------------------------------------------------------
+// Library: Legion
+//--------------------------------------------------------------------------------------------------
+// External Library Initialization
+void lib3_InitLibraries () {
+    libNtve_InitVariables();
+}
+
+// Variable Initialization
+bool lib3_InitVariables_completed = false;
+
+void lib3_InitVariables () {
+    if (lib3_InitVariables_completed) {
+        return;
+    }
+
+    lib3_InitVariables_completed = true;
+
+    lib3_gv_legionMaxSoldierNum = 100;
+    lib3_gv_legionGroup = UnitGroupEmpty();
+}
+
+// Functions
+trigger auto_lib3_gf_SpawnSoldiersThread_Trigger = null;
+
+void lib3_gf_SpawnSoldiersThread () {
+    if (auto_lib3_gf_SpawnSoldiersThread_Trigger == null) {
+        auto_lib3_gf_SpawnSoldiersThread_Trigger = TriggerCreate("auto_lib3_gf_SpawnSoldiersThread_TriggerFunc");
+    }
+
+    TriggerExecute(auto_lib3_gf_SpawnSoldiersThread_Trigger, false, false);
+}
+
+bool auto_lib3_gf_SpawnSoldiersThread_TriggerFunc (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv_index;
+    int lv_creatingNum;
+    int lv_soldierNum;
+    fixed lv_createRatio;
+
+    // Automatic Variable Declarations
+    int auto3D7CCB43_ae;
+    const int auto3D7CCB43_ai = 1;
+
+    // Variable Initialization
+
+    // Implementation
+    while ((UnitIsAlive(lib3_gv_legionMaster) == true)) {
+        lv_soldierNum = UnitGroupCount(lib3_gv_legionGroup, c_unitCountAlive);
+        if ((lv_soldierNum < lib3_gv_legionMaxSoldierNum)) {
+            lv_createRatio = (IntToFixed((lib3_gv_legionMaxSoldierNum-lv_soldierNum))/IntToFixed(lib3_gv_legionMaxSoldierNum)/10);
+            lv_creatingNum = FixedToInt((lib3_gv_legionMaxSoldierNum*lv_createRatio));
+            if ((lv_creatingNum < 1)) {
+                lv_creatingNum = 1;
+            }
+
+            auto3D7CCB43_ae = lv_creatingNum;
+            lv_index = 1;
+            for ( ; ( (auto3D7CCB43_ai >= 0 && lv_index <= auto3D7CCB43_ae) || (auto3D7CCB43_ai < 0 && lv_index >= auto3D7CCB43_ae) ) ; lv_index += auto3D7CCB43_ai ) {
+                lib3_gf_CreateSoldier();
+            }
+        }
+
+        Wait(0.1, c_timeGame);
+    }
+    return true;
+}
+
+trigger auto_lib3_gf_FollowMasterThread_Trigger = null;
+
+void lib3_gf_FollowMasterThread () {
+    if (auto_lib3_gf_FollowMasterThread_Trigger == null) {
+        auto_lib3_gf_FollowMasterThread_Trigger = TriggerCreate("auto_lib3_gf_FollowMasterThread_TriggerFunc");
+    }
+
+    TriggerExecute(auto_lib3_gf_FollowMasterThread_Trigger, false, false);
+}
+
+bool auto_lib3_gf_FollowMasterThread_TriggerFunc (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Implementation
+    while ((UnitIsAlive(lib3_gv_legionMaster) == true)) {
+        if (lib4_gf_IsMovingCtrl()) {
+            lib3_gf_FollowMaster(lib4_gv_movePoint, lib3_gv_legionGroup);
+        }
+
+        Wait(0.0, c_timeGame);
+    }
+    return true;
+}
+
+trigger auto_lib3_gf_AutoScaleCameraThread_Trigger = null;
+
+void lib3_gf_AutoScaleCameraThread () {
+    if (auto_lib3_gf_AutoScaleCameraThread_Trigger == null) {
+        auto_lib3_gf_AutoScaleCameraThread_Trigger = TriggerCreate("auto_lib3_gf_AutoScaleCameraThread_TriggerFunc");
+    }
+
+    TriggerExecute(auto_lib3_gf_AutoScaleCameraThread_Trigger, false, false);
+}
+
+bool auto_lib3_gf_AutoScaleCameraThread_TriggerFunc (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv_prevSoldierNum;
+    int lv_soldierNum;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    while ((UnitIsAlive(lib3_gv_legionMaster) == true)) {
+        lv_soldierNum = UnitGroupCount(lib3_gv_legionGroup, c_unitCountAll);
+        if ((lv_soldierNum != lv_prevSoldierNum) && (lib1_gf_IsAerialViewing() != true)) {
+            lv_prevSoldierNum = lv_soldierNum;
+            lib1_gf_ScaleUpCamera((IntToFixed(lv_soldierNum)/IntToFixed(lib3_gv_legionMaxSoldierNum)/2.0));
+        }
+
+        Wait(0.5, c_timeGame);
+    }
+    return true;
+}
+
+void lib3_gf_FollowMaster (point lp_target, unitgroup lp_group) {
+    // Variable Declarations
+    unit lv_member;
+
+    // Automatic Variable Declarations
+    unitgroup auto5679CF49_g;
+    int auto5679CF49_u;
+
+    // Variable Initialization
+
+    // Implementation
+    auto5679CF49_g = lp_group;
+    auto5679CF49_u = UnitGroupCount(auto5679CF49_g, c_unitCountAll);
+    for (;; auto5679CF49_u -= 1) {
+        lv_member = UnitGroupUnitFromEnd(auto5679CF49_g, auto5679CF49_u);
+        if (lv_member == null) { break; }
+        if (lib3_gf_CanFollowMaster(lv_member)) {
+            UnitSetPropertyFixed(lv_member, c_unitPropMovementSpeed, 6.5);
+            UnitIssueOrder(lv_member, OrderTargetingPoint(AbilityCommand("move", 3), lp_target), c_orderQueueReplace);
+        }
+
+    }
+}
+
+void lib3_gf_CreateSoldier () {
+    // Variable Declarations
+    unit lv_soldier;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    libNtve_gf_CreateUnitsWithDefaultFacing(1, "Zergling", 0, 1, UnitGetPosition(lib3_gv_legionMaster));
+    lv_soldier = UnitLastCreated();
+    UnitGroupAdd(lib3_gv_legionGroup, lv_soldier);
+    UnitSetPropertyFixed(lv_soldier, c_unitPropMovementSpeed, 6.5);
+    UnitSetPropertyFixed(lv_soldier, c_unitPropLife, 5.0);
+    UnitSetPropertyFixed(lv_soldier, c_unitPropLifeMax, 5.0);
+}
+
+bool lib3_gf_CanFollowMaster (unit lp_soldier) {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((UnitIsAlive(lp_soldier) == true) && (UnitOrderHasAbil(lp_soldier, "attack") == false)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+// Triggers
+//--------------------------------------------------------------------------------------------------
+// Trigger: SoldierAttack
+//--------------------------------------------------------------------------------------------------
+bool lib3_gt_SoldierAttack_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Conditions
+    if (testConds) {
+        if (!((UnitGetOwner(EventUnit()) == 1))) {
+            return false;
+        }
+
+        if (!((UnitGroupHasUnit(lib3_gv_legionGroup, EventUnit()) == true))) {
+            return false;
+        }
+    }
+
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    UnitSetPropertyFixed(EventUnit(), c_unitPropMovementSpeed, 15.0);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void lib3_gt_SoldierAttack_Init () {
+    lib3_gt_SoldierAttack = TriggerCreate("lib3_gt_SoldierAttack_Func");
+    TriggerAddEventUnitAbility(lib3_gt_SoldierAttack, null, AbilityCommand("attack", 0), c_unitAbilStageAll, false);
+}
+
+void lib3_InitTriggers () {
+    lib3_gt_SoldierAttack_Init();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library Initialization
+//--------------------------------------------------------------------------------------------------
+bool lib3_InitLib_completed = false;
+
+void lib3_InitLib () {
+    if (lib3_InitLib_completed) {
+        return;
+    }
+
+    lib3_InitLib_completed = true;
+
+    lib3_InitLibraries();
+    lib3_InitVariables();
+    lib3_InitTriggers();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library Initialization
+//--------------------------------------------------------------------------------------------------
+void InitLibs () {
+    libNtve_InitLib();
+    lib1_InitLib();
+    lib4_InitLib();
+    lib3_InitLib();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Global Variables
+//--------------------------------------------------------------------------------------------------
+unitgroup gv_marines;
+unit gv_player;
+
+void InitGlobals () {
+    gv_marines = UnitGroupEmpty();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Global Function Declarations
+//--------------------------------------------------------------------------------------------------
+void gf_CreateEnemies (point lp_position, int lp_number);
+void gf_CreateEnemy ();
+void gf_CreatePlayer ();
+void gf_SpawnMarinesThread ();
+
+//--------------------------------------------------------------------------------------------------
+// Trigger Variables
+//--------------------------------------------------------------------------------------------------
+trigger gt_Main;
+
+//--------------------------------------------------------------------------------------------------
+// Global Functions
+//--------------------------------------------------------------------------------------------------
+void gf_CreateEnemies (point lp_position, int lp_number) {
+    // Automatic Variable Declarations
+    // Implementation
+    libNtve_gf_CreateUnitsWithDefaultFacing(lp_number, "Marine", 0, 2, lp_position);
+}
+
+void gf_CreateEnemy () {
+    // Variable Declarations
+    unit lv_enemy;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    libNtve_gf_CreateUnitsWithDefaultFacing(1, "Marine", 0, 2, PointFromId(464489161));
+    lv_enemy = UnitLastCreated();
+    UnitGroupAdd(gv_marines, lv_enemy);
+}
+
+void gf_CreatePlayer () {
+    // Variable Declarations
+    unit lv_player;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    libNtve_gf_CreateUnitsWithDefaultFacing(1, "SwarmQueen", 0, 1, PointFromId(1109194472));
+    lv_player = UnitLastCreated();
+    UnitSetPropertyFixed(lv_player, c_unitPropMovementSpeed, 6.0);
+    UnitWeaponRemove(lv_player, "SwarmQueenAcidSpines");
+    gv_player = lv_player;
+}
+
+void gf_SpawnMarinesThread () {
+    // Variable Declarations
+    int lv_index;
+
+    // Automatic Variable Declarations
+    const int autoE727AEFC_ae = 3;
+    const int autoE727AEFC_ai = 1;
+
+    // Variable Initialization
+
+    // Implementation
+    while (true) {
+        if ((UnitGroupCount(gv_marines, c_unitCountAlive) < 50)) {
+            lv_index = 1;
+            for ( ; ( (autoE727AEFC_ai >= 0 && lv_index <= autoE727AEFC_ae) || (autoE727AEFC_ai < 0 && lv_index >= autoE727AEFC_ae) ) ; lv_index += autoE727AEFC_ai ) {
+                gf_CreateEnemy();
+            }
+        }
+
+        Wait(0.1, c_timeGame);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger: Main
+//--------------------------------------------------------------------------------------------------
+bool gt_Main_Func (bool testConds, bool runActions) {
+    // Automatic Variable Declarations
+    // Actions
+    if (!runActions) {
+        return true;
+    }
+
+    libNtve_gf_AddRemoveUIFrameTypeForGlobalFilterList(true, c_syncFrameTypeStatusUI);
+    libNtve_gf_HideGameUI(false, PlayerGroupAll());
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/EFEA1A86"));
+    gf_CreatePlayer();
+    UnitStatusBarOverride(gv_player, c_unitStatusGroupAll);
+    lib1_gv_cameraInitDistance = 24.0;
+    lib1_gv_cameraDistance = lib1_gv_cameraInitDistance;
+    lib1_gv_cameraMaxDistance = lib1_gv_cameraDistance;
+    lib1_gv_cameraMaxDistance *= 3.0;
+    TextExpressionSetToken("Param/Expression/79738242", "A", FixedToText(lib1_gv_cameraDistance, 3));
+    TextExpressionSetToken("Param/Expression/79738242", "B", FixedToText(lib1_gv_cameraMaxDistance, 3));
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, TextExpressionAssemble("Param/Expression/79738242"));
+    lib1_gv_cameraTarget = gv_player;
+    lib4_gv_wasdUnit = gv_player;
+    lib3_gv_legionMaster = gv_player;
+    lib4_gv_movePoint = UnitGetPosition(gv_player);
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/62FD62F9"));
+    lib1_gf_FollowTargetThread();
+    lib4_gf_KeyPressDetectThread();
+    lib3_gf_SpawnSoldiersThread();
+    lib3_gf_FollowMasterThread();
+    lib3_gf_AutoScaleCameraThread();
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/656FDD14"));
+    gf_SpawnMarinesThread();
+    gf_CreateEnemies(PointFromId(464489161), 50);
+    return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+void gt_Main_Init () {
+    gt_Main = TriggerCreate("gt_Main_Func");
+    TriggerAddEventMapInit(gt_Main);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Trigger Initialization
+//--------------------------------------------------------------------------------------------------
+void InitTriggers () {
+    gt_Main_Init();
+}
+
+//--------------------------------------------------------------------------------------------------
+// Map Initialization
+//--------------------------------------------------------------------------------------------------
+void InitMap () {
+    InitLibs();
+    InitGlobals();
+    InitTriggers();
+}
