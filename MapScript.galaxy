@@ -625,12 +625,26 @@ void InitLibs () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Global Structures
+//--------------------------------------------------------------------------------------------------
+struct gs_Cohort {
+    unitgroup lv_legionaries;
+    unit lv_centurion;
+};
+
+//--------------------------------------------------------------------------------------------------
 // Global Variables
 //--------------------------------------------------------------------------------------------------
+gs_Cohort[6] gv_playerCohorts;
 unitgroup gv_marines;
 unit gv_player;
 
 void InitGlobals () {
+    int init_i;
+
+    for (init_i = 0; init_i <= 5; init_i += 1) {
+        gv_playerCohorts[init_i].lv_legionaries = UnitGroupEmpty();
+    }
     gv_marines = UnitGroupEmpty();
 }
 

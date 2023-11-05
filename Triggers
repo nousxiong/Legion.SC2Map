@@ -3783,8 +3783,16 @@
         <ValueType Type="int"/>
     </Element>
     <Element Type="Category" Id="BE1A2301">
+        <Item Type="Variable" Id="2845944F"/>
         <Item Type="Variable" Id="4488072B"/>
         <Item Type="Variable" Id="7FC2DF29"/>
+    </Element>
+    <Element Type="Variable" Id="2845944F">
+        <VariableType>
+            <Type Value="struct"/>
+            <TypeElement Type="Structure" Id="85390559"/>
+            <ArraySize Dim="0" Value="5"/>
+        </VariableType>
     </Element>
     <Element Type="Variable" Id="4488072B">
         <VariableType>
@@ -3808,7 +3816,36 @@
         <Preset Type="PresetValue" Library="Ntve" Id="D6EA4D09"/>
     </Element>
     <Element Type="Category" Id="494D8FAE">
+        <Item Type="Category" Id="085BAC8D"/>
         <Item Type="Category" Id="134D1D28"/>
+    </Element>
+    <Element Type="Category" Id="085BAC8D">
+        <Item Type="Structure" Id="85390559"/>
+    </Element>
+    <Element Type="Structure" Id="85390559">
+        <Variable Type="Variable" Id="52BA83F5"/>
+        <Variable Type="Variable" Id="B8DC5888"/>
+    </Element>
+    <Element Type="Variable" Id="52BA83F5">
+        <VariableType>
+            <Type Value="unitgroup"/>
+        </VariableType>
+        <Value Type="Param" Id="844EF2DB"/>
+    </Element>
+    <Element Type="Param" Id="844EF2DB">
+        <FunctionCall Type="FunctionCall" Id="CD666484"/>
+    </Element>
+    <Element Type="FunctionCall" Id="CD666484">
+        <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000104"/>
+    </Element>
+    <Element Type="Variable" Id="B8DC5888">
+        <VariableType>
+            <Type Value="unit"/>
+        </VariableType>
+        <Value Type="Param" Id="C13071CE"/>
+    </Element>
+    <Element Type="Param" Id="C13071CE">
+        <Preset Type="PresetValue" Library="Ntve" Id="D6EA4D09"/>
     </Element>
     <Element Type="Category" Id="134D1D28">
         <Item Type="FunctionDef" Id="FFC3D2EE"/>
