@@ -369,12 +369,19 @@ void lib4_InitLib () {
 //--------------------------------------------------------------------------------------------------
 // Library: Legion
 //--------------------------------------------------------------------------------------------------
+// Structures
+struct lib3_gs_Cohort {
+    unitgroup lv_legionaries;
+    unit lv_centurion;
+};
+
 // Variable Declarations
 int lib3_gv_legionMaxSoldierNum;
 unit lib3_gv_legionMaster;
 unitgroup lib3_gv_legionGroup;
 
 // Function Declarations
+void lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionaryCount, int lp_playerIndex, point lp_spawnPosition);
 void lib3_gf_SpawnSoldiersThread ();
 void lib3_gf_FollowMasterThread ();
 void lib3_gf_AutoScaleCameraThread ();
@@ -411,6 +418,19 @@ void lib3_InitVariables () {
 }
 
 // Functions
+void lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionaryCount, int lp_playerIndex, point lp_spawnPosition) {
+    // Variable Declarations
+    lib3_gs_Cohort lv_cohort;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+    lv_cohort.lv_legionaries = UnitGroupEmpty();
+
+    // Implementation
+    libNtve_gf_CreateUnitsWithDefaultFacing(1, lp_centurionType, 0, lp_playerIndex, lp_spawnPosition);
+    lv_cohort.lv_centurion = UnitLastCreated();
+}
+
 trigger auto_lib3_gf_SpawnSoldiersThread_Trigger = null;
 
 void lib3_gf_SpawnSoldiersThread () {
@@ -625,17 +645,9 @@ void InitLibs () {
 }
 
 //--------------------------------------------------------------------------------------------------
-// Global Structures
-//--------------------------------------------------------------------------------------------------
-struct gs_Cohort {
-    unitgroup lv_legionaries;
-    unit lv_centurion;
-};
-
-//--------------------------------------------------------------------------------------------------
 // Global Variables
 //--------------------------------------------------------------------------------------------------
-gs_Cohort[6] gv_playerCohorts;
+lib3_gs_Cohort[6] gv_playerCohorts;
 unitgroup gv_marines;
 unit gv_player;
 
