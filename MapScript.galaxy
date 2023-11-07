@@ -376,6 +376,8 @@ struct lib3_gs_Cohort {
 };
 
 // Variable Declarations
+lib3_gs_Cohort[11] lib3_gv_cohorts;
+int lib3_gv_cohortIndex;
 int lib3_gv_legionMaxSoldierNum;
 unit lib3_gv_legionMaster;
 unitgroup lib3_gv_legionGroup;
@@ -407,28 +409,26 @@ void lib3_InitLibraries () {
 bool lib3_InitVariables_completed = false;
 
 void lib3_InitVariables () {
+    int init_i;
+
     if (lib3_InitVariables_completed) {
         return;
     }
 
     lib3_InitVariables_completed = true;
 
+    for (init_i = 0; init_i <= 10; init_i += 1) {
+        lib3_gv_cohorts[init_i].lv_legionaries = UnitGroupEmpty();
+    }
     lib3_gv_legionMaxSoldierNum = 100;
     lib3_gv_legionGroup = UnitGroupEmpty();
 }
 
 // Functions
 void lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionaryCount, int lp_playerIndex, point lp_spawnPosition) {
-    // Variable Declarations
-    lib3_gs_Cohort lv_cohort;
-
     // Automatic Variable Declarations
-    // Variable Initialization
-    lv_cohort.lv_legionaries = UnitGroupEmpty();
-
     // Implementation
     libNtve_gf_CreateUnitsWithDefaultFacing(1, lp_centurionType, 0, lp_playerIndex, lp_spawnPosition);
-    lv_cohort.lv_centurion = UnitLastCreated();
 }
 
 trigger auto_lib3_gf_SpawnSoldiersThread_Trigger = null;
@@ -635,6 +635,85 @@ void lib3_InitLib () {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Library: IndexStack
+//--------------------------------------------------------------------------------------------------
+// Constants
+const int lib2_gv_errcFull = -1;
+const int lib2_gv_maxSize = 10;
+
+// Structures
+struct lib2_gs_IndexStack {
+    int[11] lv_indexes;
+    int lv_size;
+};
+
+// Variable Declarations
+lib2_gs_IndexStack[lib2_gv_maxSize + 1] lib2_gv_indexStacks;
+int lib2_gv_size;
+
+// Function Declarations
+int lib2_gf_CreateIndexStack ();
+
+// Library Initialization
+void lib2_InitVariables ();
+
+//--------------------------------------------------------------------------------------------------
+// Library: IndexStack
+//--------------------------------------------------------------------------------------------------
+// External Library Initialization
+void lib2_InitLibraries () {
+    libNtve_InitVariables();
+}
+
+// Variable Initialization
+bool lib2_InitVariables_completed = false;
+
+void lib2_InitVariables () {
+    if (lib2_InitVariables_completed) {
+        return;
+    }
+
+    lib2_InitVariables_completed = true;
+
+}
+
+// Functions
+int lib2_gf_CreateIndexStack () {
+    // Variable Declarations
+    int lv_newIndex;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    if ((lib2_gv_size >= lib2_gv_maxSize)) {
+        return lib2_gv_errcFull;
+    }
+    else {
+        lv_newIndex = lib2_gv_size;
+        lib2_gv_indexStacks[lv_newIndex].lv_size = 0;
+        lib2_gv_size += 1;
+        return lv_newIndex;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+// Library Initialization
+//--------------------------------------------------------------------------------------------------
+bool lib2_InitLib_completed = false;
+
+void lib2_InitLib () {
+    if (lib2_InitLib_completed) {
+        return;
+    }
+
+    lib2_InitLib_completed = true;
+
+    lib2_InitLibraries();
+    lib2_InitVariables();
+}
+
+//--------------------------------------------------------------------------------------------------
 // Library Initialization
 //--------------------------------------------------------------------------------------------------
 void InitLibs () {
@@ -642,6 +721,7 @@ void InitLibs () {
     lib1_InitLib();
     lib4_InitLib();
     lib3_InitLib();
+    lib2_InitLib();
 }
 
 //--------------------------------------------------------------------------------------------------

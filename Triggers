@@ -2033,6 +2033,8 @@
             <Item Type="Comment" Library="3" Id="28E0CD16"/>
             <Item Type="Structure" Library="3" Id="7F263D09"/>
             <Item Type="FunctionDef" Library="3" Id="B384CBB4"/>
+            <Item Type="Variable" Library="3" Id="A379712E"/>
+            <Item Type="Variable" Library="3" Id="286D6FA4"/>
         </Element>
         <Element Type="Comment" Id="28E0CD16">
             <Comment>
@@ -2074,9 +2076,7 @@
             <Parameter Type="ParamDef" Library="3" Id="2104FE92"/>
             <Parameter Type="ParamDef" Library="3" Id="FEC4C802"/>
             <Parameter Type="ParamDef" Library="3" Id="7E9200D3"/>
-            <Variable Type="Variable" Library="3" Id="C92FDA3B"/>
             <FunctionCall Type="FunctionCall" Library="3" Id="F4CD243F"/>
-            <FunctionCall Type="FunctionCall" Library="3" Id="F5BD9793"/>
         </Element>
         <Element Type="ParamDef" Id="E5287808">
             <ParameterType>
@@ -2129,12 +2129,6 @@
         <Element Type="Param" Id="08AA8EFE">
             <Preset Type="PresetValue" Library="Ntve" Id="568CBBF1"/>
         </Element>
-        <Element Type="Variable" Id="C92FDA3B">
-            <VariableType>
-                <Type Value="struct"/>
-                <TypeElement Type="Structure" Library="3" Id="7F263D09"/>
-            </VariableType>
-        </Element>
         <Element Type="FunctionCall" Id="F4CD243F">
             <FunctionDef Type="FunctionDef" Library="Ntve" Id="F247156C"/>
             <Parameter Type="Param" Library="3" Id="7F1E2EBD"/>
@@ -2165,25 +2159,22 @@
             <ParameterDef Type="ParamDef" Library="Ntve" Id="23D48FEC"/>
             <Parameter Type="ParamDef" Library="3" Id="7E9200D3"/>
         </Element>
-        <Element Type="FunctionCall" Id="F5BD9793">
-            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000136"/>
-            <Parameter Type="Param" Library="3" Id="3081E02C"/>
-            <Parameter Type="Param" Library="3" Id="99DE84C6"/>
+        <Element Type="Variable" Id="A379712E">
+            <VariableType>
+                <Type Value="struct"/>
+                <TypeElement Type="Structure" Library="3" Id="7F263D09"/>
+                <ArraySize Dim="0" Value="10"/>
+            </VariableType>
         </Element>
-        <Element Type="Param" Id="3081E02C">
-            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000219"/>
-            <Variable Type="Variable" Library="3" Id="C92FDA3B"/>
-            <StructMember Type="Param" Library="3" Id="B3DC11E5"/>
+        <Element Type="Variable" Id="286D6FA4">
+            <VariableType>
+                <Type Value="int"/>
+            </VariableType>
+            <Value Type="Param" Library="3" Id="0861AE9F"/>
         </Element>
-        <Element Type="Param" Id="B3DC11E5">
-            <Variable Type="Variable" Library="3" Id="8F549777"/>
-        </Element>
-        <Element Type="Param" Id="99DE84C6">
-            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000220"/>
-            <FunctionCall Type="FunctionCall" Library="3" Id="DB439171"/>
-        </Element>
-        <Element Type="FunctionCall" Id="DB439171">
-            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000076"/>
+        <Element Type="Param" Id="0861AE9F">
+            <Value>0</Value>
+            <ValueType Type="int"/>
         </Element>
         <Element Type="Comment" Id="58713869">
             <Comment>
@@ -3472,6 +3463,234 @@
         </Element>
         <Element Type="FunctionCall" Id="BFD6E77C">
             <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000104"/>
+        </Element>
+    </Library>
+    <Library Id="2">
+        <Root>
+            <Item Type="Variable" Library="2" Id="026433A5"/>
+            <Item Type="Variable" Library="2" Id="D5A6F9B8"/>
+            <Item Type="Variable" Library="2" Id="371040A4"/>
+            <Item Type="Variable" Library="2" Id="FD2B7A45"/>
+            <Item Type="Structure" Library="2" Id="C3F30E5F"/>
+            <Item Type="FunctionDef" Library="2" Id="34C7F0CA"/>
+        </Root>
+        <Element Type="Variable" Id="026433A5">
+            <VariableType>
+                <Type Value="int"/>
+                <Constant/>
+            </VariableType>
+            <Value Type="Param" Library="2" Id="D9906534"/>
+        </Element>
+        <Element Type="Param" Id="D9906534">
+            <Value>-1</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Variable" Id="D5A6F9B8">
+            <VariableType>
+                <Type Value="int"/>
+                <Constant/>
+            </VariableType>
+            <Value Type="Param" Library="2" Id="3A36C0A9"/>
+        </Element>
+        <Element Type="Param" Id="3A36C0A9">
+            <Value>10</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Variable" Id="371040A4">
+            <VariableType>
+                <Type Value="struct"/>
+                <TypeElement Type="Structure" Library="2" Id="C3F30E5F"/>
+                <ArraySize Dim="0" Type="Variable" Library="2" Id="D5A6F9B8"/>
+            </VariableType>
+        </Element>
+        <Element Type="Variable" Id="FD2B7A45">
+            <VariableType>
+                <Type Value="int"/>
+            </VariableType>
+            <Value Type="Param" Library="2" Id="BC2ABDA0"/>
+        </Element>
+        <Element Type="Param" Id="BC2ABDA0">
+            <Value>0</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Structure" Id="C3F30E5F">
+            <Variable Type="Comment" Library="2" Id="64E99C38"/>
+            <Variable Type="Variable" Library="2" Id="980D6657"/>
+            <Variable Type="Variable" Library="2" Id="361266FB"/>
+        </Element>
+        <Element Type="Comment" Id="64E99C38">
+            <Comment>
+                存放索引的堆栈
+            </Comment>
+        </Element>
+        <Element Type="Variable" Id="980D6657">
+            <VariableType>
+                <Type Value="int"/>
+                <ArraySize Dim="0" Value="10"/>
+            </VariableType>
+            <Value Type="Param" Library="2" Id="D9461B15"/>
+        </Element>
+        <Element Type="Param" Id="D9461B15">
+            <Value>0</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Variable" Id="361266FB">
+            <VariableType>
+                <Type Value="int"/>
+            </VariableType>
+            <Value Type="Param" Library="2" Id="8E181A19"/>
+        </Element>
+        <Element Type="Param" Id="8E181A19">
+            <Value>0</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="FunctionDef" Id="34C7F0CA">
+            <FlagAction/>
+            <ReturnType>
+                <Type Value="int"/>
+            </ReturnType>
+            <Variable Type="Variable" Library="2" Id="F5BF90D5"/>
+            <FunctionCall Type="Comment" Library="2" Id="7E416ED3"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="F0D90F1C"/>
+        </Element>
+        <Element Type="Variable" Id="F5BF90D5">
+            <VariableType>
+                <Type Value="int"/>
+            </VariableType>
+            <Value Type="Param" Library="2" Id="C17B48DE"/>
+        </Element>
+        <Element Type="Param" Id="C17B48DE">
+            <Value>0</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Comment" Id="7E416ED3">
+            <Comment>
+                在IndexStacks数组新的空位创建一个IndexStack，返回创建的新索引值；如果失败返回-1
+            </Comment>
+        </Element>
+        <Element Type="FunctionCall" Id="F0D90F1C">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000137"/>
+            <FunctionCall Type="Comment" Library="2" Id="2FC265EF"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="91D8E936"/>
+            <FunctionCall Type="Comment" Library="2" Id="D400F38D"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="4C53A23C"/>
+            <FunctionCall Type="Comment" Library="2" Id="739D7CB6"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="3FC1AB22"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="5C2FD3DF"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="6EA032B9"/>
+            <FunctionCall Type="FunctionCall" Library="2" Id="143A1651"/>
+        </Element>
+        <Element Type="Comment" Id="2FC265EF">
+            <Comment>
+                设置新索引
+            </Comment>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+        </Element>
+        <Element Type="FunctionCall" Id="91D8E936">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000136"/>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+            <Parameter Type="Param" Library="2" Id="5F9A25EF"/>
+            <Parameter Type="Param" Library="2" Id="CB4676AA"/>
+        </Element>
+        <Element Type="Param" Id="5F9A25EF">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000219"/>
+            <Variable Type="Variable" Library="2" Id="F5BF90D5"/>
+        </Element>
+        <Element Type="Param" Id="CB4676AA">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000220"/>
+            <Variable Type="Variable" Library="2" Id="FD2B7A45"/>
+        </Element>
+        <Element Type="Comment" Id="D400F38D">
+            <Comment>
+                初始化新的IndexStack
+            </Comment>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+        </Element>
+        <Element Type="FunctionCall" Id="4C53A23C">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000136"/>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+            <Parameter Type="Param" Library="2" Id="6EAF8F76"/>
+            <Parameter Type="Param" Library="2" Id="59D256BF"/>
+        </Element>
+        <Element Type="Param" Id="6EAF8F76">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000219"/>
+            <Variable Type="Variable" Library="2" Id="371040A4"/>
+            <StructMember Type="Param" Library="2" Id="CBA4BB51"/>
+            <Array Type="Param" Library="2" Id="64AF938D"/>
+        </Element>
+        <Element Type="Param" Id="CBA4BB51">
+            <Variable Type="Variable" Library="2" Id="361266FB"/>
+        </Element>
+        <Element Type="Param" Id="64AF938D">
+            <Variable Type="Variable" Library="2" Id="F5BF90D5"/>
+        </Element>
+        <Element Type="Param" Id="59D256BF">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000220"/>
+            <Value>0</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Comment" Id="739D7CB6">
+            <Comment>
+                Size++
+            </Comment>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+        </Element>
+        <Element Type="FunctionCall" Id="3FC1AB22">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="A0F31305"/>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+            <Parameter Type="Param" Library="2" Id="D19A4DB1"/>
+            <Parameter Type="Param" Library="2" Id="FFFA371F"/>
+            <Parameter Type="Param" Library="2" Id="FE98D8ED"/>
+        </Element>
+        <Element Type="Param" Id="D19A4DB1">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="5BFF7323"/>
+            <Preset Type="PresetValue" Library="Ntve" Id="00000085"/>
+        </Element>
+        <Element Type="Param" Id="FFFA371F">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="6725C0EB"/>
+            <Value>1</Value>
+            <ValueType Type="int"/>
+        </Element>
+        <Element Type="Param" Id="FE98D8ED">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="7B3B0884"/>
+            <Variable Type="Variable" Library="2" Id="FD2B7A45"/>
+        </Element>
+        <Element Type="FunctionCall" Id="5C2FD3DF">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000097"/>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000005"/>
+            <Parameter Type="Param" Library="2" Id="089EA266"/>
+        </Element>
+        <Element Type="Param" Id="089EA266">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000488"/>
+            <Variable Type="Variable" Library="2" Id="F5BF90D5"/>
+        </Element>
+        <Element Type="FunctionCall" Id="6EA032B9">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000097"/>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000004"/>
+            <Parameter Type="Param" Library="2" Id="84E9E317"/>
+        </Element>
+        <Element Type="Param" Id="84E9E317">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="00000488"/>
+            <Variable Type="Variable" Library="2" Id="026433A5"/>
+        </Element>
+        <Element Type="FunctionCall" Id="143A1651">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="C439C375"/>
+            <SubFunctionType Type="SubFuncType" Library="Ntve" Id="00000003"/>
+            <Parameter Type="Param" Library="2" Id="3965D5F0"/>
+            <Parameter Type="Param" Library="2" Id="0AE5CF8E"/>
+            <Parameter Type="Param" Library="2" Id="98B4D27C"/>
+        </Element>
+        <Element Type="Param" Id="3965D5F0">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="ABB380C4"/>
+            <Variable Type="Variable" Library="2" Id="FD2B7A45"/>
+        </Element>
+        <Element Type="Param" Id="0AE5CF8E">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="51567265"/>
+            <Preset Type="PresetValue" Library="Ntve" Id="B128CB9A"/>
+        </Element>
+        <Element Type="Param" Id="98B4D27C">
+            <ParameterDef Type="ParamDef" Library="Ntve" Id="4A15EC5F"/>
+            <Variable Type="Variable" Library="2" Id="D5A6F9B8"/>
         </Element>
     </Library>
     <Root>
