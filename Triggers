@@ -3697,6 +3697,7 @@
         <Item Type="Category" Id="980C368C"/>
         <Item Type="Category" Id="BE1A2301"/>
         <Item Type="Category" Id="494D8FAE"/>
+        <Item Type="CustomScript" Id="A8AC7B72"/>
     </Root>
     <Element Type="Category" Id="980C368C">
         <Item Type="Trigger" Id="79233BA7"/>
@@ -4547,5 +4548,11 @@
     <Element Type="Param" Id="9681E024">
         <ParameterDef Type="ParamDef" Library="Ntve" Id="00000420"/>
         <Preset Type="PresetValue" Library="Ntve" Id="00000013"/>
+    </Element>
+    <Element Type="CustomScript" Id="A8AC7B72">
+        <ScriptCode>
+            include &quot;scripts/main&quot;
+        </ScriptCode>
+        <InitFunc>main</InitFunc>
     </Element>
 </TriggerData>

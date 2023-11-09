@@ -1,0 +1,3 @@
+void main() {
+	TriggerDebugOutput(10, StringToText("Hello, galaxy!"), true);
+}
