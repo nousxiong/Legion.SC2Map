@@ -1,0 +1,81 @@
+// You're actually better served defining this kind of thing in the
+// Trigger module, because then you can use the same flags from there.
+// They'd end up looking something like ge_MessageType_Error, then.
+const int c_messageTypeError = 1;
+const int c_messageTypeDebug = 2;
+const int c_messageTypeSystem = 3;
+static text[4] messageColors;
+
+// |text| can never be const, because we can't reference the type directly,
+// only convert to it or extract it from defined API entry points
+static text colorBreak = StringToText("</c>");
+
+static void printMsg(text msg, int p, int t) {
+    if ( t == c_messageTypeDebug ) {
+        TriggerDebugOutput(10, msg, false);
+    } else {
+        if ( p == c_playerAny ) {
+            UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, messageColors[t] + msg + colorBreak);
+        } else {
+            UIDisplayMessage(PlayerGroupSingle(p), c_messageAreaSubtitle, messageColors[t] + msg + colorBreak);
+        }
+    }
+}
+// Usually, you want all user-facing text to be just that - |text|.
+// But in some cases, it is not useful, like for debug, system, and error messages - who cares.
+// The reason for |text| is that it is localizable, so it can be translated into other languages.
+void err(string msg, int p) { printMsg(StringToText(msg), p, c_messageTypeError); }
+void dbg(string msg, int p) { printMsg(StringToText(msg), p, c_messageTypeDebug); }
+void sys(string msg, int p) { printMsg(StringToText(msg), p, c_messageTypeSystem); }
+
+// Looks up the given string in the given catalog and returns either
+// a space-separated list of matches, or an exact match that can be used
+// for example by TechTreeUpgradeAddLevel:
+// string res = findCatalogItem("Booster", c_gameCatalogUpgrade);
+// if ( res != null && StringContains(res, " ", c_stringAnywhere, c_stringCase) == false ) {
+//   - Valid, single result
+// }
+string findCatalogItem(string find, int cat) {
+    string res;
+    string test;
+    int i = CatalogEntryCount(cat);
+    if ( CatalogEntryIsValid(cat, find) == true ) { return find; }
+    // TODO
+    // There is no reason to use a while loop here, you're better served with
+    // for (i = 1; i <= CatalogEntryCount(cat); i += 1) {
+    while ( i != 0 ) {
+        test = CatalogEntryGet(cat, i);
+        if ( CatalogEntryIsValid(cat, test) ) {
+            if ( StringEqual(test, find, c_stringNoCase) == true ) {
+                return test;
+            }
+            if ( StringContains(test, find, c_stringAnywhere, c_stringNoCase) == true ) {
+                if ( res == null ) {
+                    res = test;
+                } else {
+                    if ( StringContains(res, test, c_stringAnywhere, c_stringCase) == false ) {
+                        res = res + " " + test;
+                    }
+                }
+            }
+        }
+        i = i - 1;
+    }
+    return res;
+}
+
+// PlayerGroupHasPlayer actually errors if you ask it about player 0 or 15.
+// This is just pure stupidity on Blizzards part. They should fix it.
+bool myPlayerGroupHasPlayer(int p, playergroup pg) {
+    if ( p < 1 || p > 15 ) { return false; }
+    return PlayerGroupHasPlayer(pg, p);
+}
+
+void initUtil() {
+    messageColors[c_messageTypeDebug] = StringToText("<c val=\"FF6600\">");
+    messageColors[c_messageTypeSystem] = StringToText("<c val=\"FFFF00\">");
+    messageColors[c_messageTypeError] = StringToText("<c val=\"FF0000\">");
+
+    // noopfunc(); - this would error, because the function is |static| in main.galaxy
+    // anothernoop(); - this would work fine, because the function is declared before the |include|
+}

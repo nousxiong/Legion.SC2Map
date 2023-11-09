@@ -1,0 +1,150 @@
+// This file contains a very rudimentary and simply command processor and registry.
+// The main entry point is registerChatCommand.
+//
+// There is lots of room for improvement here, and that's kind of the point.
+// While improvements to the code are welcome in the SC2 documentation repository,
+// remember that users should want to improve the code in their own time.
+// The most useful thing would probably be to add some comments sprinkled around on
+// how to improve things incrementally.
+//
+
+include "scripts/util"
+
+void runCmd(string input, int player);
+typedef funcref<runCmd> runCmdRef;
+struct cmd {
+    string cmd;
+    string helptext;
+    runCmdRef invoke;
+    bool enabled;
+    bool needsInput;
+};
+typedef structref<cmd> cmdRef;
+
+static cmd[100] cmds;
+static int cmdCount;
+
+void registerChatCommand(string cmd, string helptext, bool needsInput, bool enabled, runCmdRef run) {
+    cmds[cmdCount].invoke = run;
+    cmds[cmdCount].cmd = cmd;
+    cmds[cmdCount].helptext = helptext;
+    cmds[cmdCount].needsInput = needsInput;
+    cmds[cmdCount].enabled = enabled;
+    cmdCount += 1;
+}
+
+static int getCommandInfo(string cmd) {
+    int i;
+    for (i = 0; i < cmdCount; i += 1) {
+        if ( cmds[i].cmd == cmd ) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool toggleChatCommand(string cmd, bool enabled) {
+    int index = getCommandInfo(cmd);
+    if ( index == -1 ) { return false; }
+    cmds[index].enabled = enabled;
+    return true;
+}
+
+static void invoke(cmdRef run, string input, int player) {
+    if ( !run.enabled ) {
+        err("'" + run.cmd + "' is currently disabled.", player);
+        return;
+    }
+    if ( run.needsInput == true && ( input == null || input == "" ) ) {
+        err(run.helptext, player);
+        return;
+    }
+    run.invoke(input, player);
+}
+
+bool commandInvoked(bool check, bool run) {
+    int player = EventPlayer();
+    string msg = EventChatMessage(false);
+    string input;
+    string cmd;
+    int i;
+    bool any = false;
+    if ( !run ) { return true; }
+    if ( StringSub(msg, 1, 1) != "-" ) { return true; }
+
+    if ( StringContains(msg, " ", c_stringAnywhere, true) ) {
+        i = StringFind(msg, " ", true);
+        cmd = StringCase(StringSub(msg, 2, i - 1), false);
+        input = StringSub(msg, i + 1, StringLength(msg));
+    } else {
+        cmd = StringCase(StringSub(msg, 2, StringLength(msg)), false);
+    }
+
+    if ( cmd == "" ) { return true; }
+
+    for (i = 0; i < cmdCount; i += 1) {
+        if ( cmds[i].cmd == cmd ) {
+            any = true;
+            invoke(cmds[i], input, player);
+        }
+    }
+
+    if ( !any ) {
+        err("No such command ('" + cmd + "') found.", player);
+    }
+
+    return true;
+}
+
+static void specificCommandHelp(string cmd, int player) {
+    int i;
+    bool found = false;
+    int exact = getCommandInfo(cmd);
+    string avail = "";
+    if ( exact != -1 ) {
+        // We found an exact match, so show the help for it.
+        sys(cmds[exact].helptext, player);
+    } else {
+        // We did not find an exact match, so we do a fuzzy search
+        for (i = 0; i < cmdCount; i += 1) {
+            if (
+                cmds[i].enabled &&
+                StringContains(cmds[i].cmd, cmd, c_stringAnywhere, false)
+            ) {
+                avail = avail + " " + cmds[i].cmd;
+            }
+        }
+        if ( avail != "" ) {
+            sys("Matches:" + avail, player);
+            avail = "";
+        } else {
+            sys("No matching commands.", player);
+        }
+    }
+}
+
+void cmdHelp(string input, int player) {
+    string with;
+    string avail = "";
+    int i;
+    if ( input != null ) { with = StringCase(input, false); }
+    if ( with != null && with != "" && with != " " ) {
+        // -help [anything]
+        specificCommandHelp(with, player);
+    } else {
+        // -help
+        for (i = 0; i < cmdCount; i += 1) {
+            if ( cmds[i].enabled ) {
+                avail = avail + " " + cmds[i].cmd;
+            }
+        }
+        if ( avail != "" ) {
+            sys("Commands:" + avail, player);
+        }
+    }
+}
+
+void initCmd() {
+    TriggerAddEventChatMessage(TriggerCreate("commandInvoked"), c_playerAny, "-", false);
+    registerChatCommand("help", "Shows available commands, or help for a specific command.", false, true, cmdHelp);
+}
