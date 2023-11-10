@@ -2077,6 +2077,7 @@
             <Parameter Type="ParamDef" Library="3" Id="FEC4C802"/>
             <Parameter Type="ParamDef" Library="3" Id="7E9200D3"/>
             <FunctionCall Type="FunctionCall" Library="3" Id="F4CD243F"/>
+            <FunctionCall Type="FunctionCall" Library="3" Id="1C17D61D"/>
         </Element>
         <Element Type="ParamDef" Id="E5287808">
             <ParameterType>
@@ -2158,6 +2159,15 @@
         <Element Type="Param" Id="FB660549">
             <ParameterDef Type="ParamDef" Library="Ntve" Id="23D48FEC"/>
             <Parameter Type="ParamDef" Library="3" Id="7E9200D3"/>
+        </Element>
+        <Element Type="FunctionCall" Id="1C17D61D">
+            <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000123"/>
+            <ScriptCode>
+                //err(&quot;hi&quot;, 1);
+                //int i = 0;
+                //lib3_gs_Cohort cohort;
+                //unit cent = cohort.lv_centurion;
+            </ScriptCode>
         </Element>
         <Element Type="Variable" Id="A379712E">
             <VariableType>
@@ -4331,6 +4341,7 @@
     <Element Type="FunctionDef" Id="100245A9">
         <FlagAction/>
         <Variable Type="Variable" Id="5EE9CEA3"/>
+        <FunctionCall Type="FunctionCall" Id="BBE59F36"/>
         <FunctionCall Type="FunctionCall" Id="95626354"/>
         <FunctionCall Type="FunctionCall" Id="DC16E7C0"/>
         <FunctionCall Type="FunctionCall" Id="3698DB2F"/>
@@ -4345,6 +4356,14 @@
     </Element>
     <Element Type="Param" Id="D33F1A43">
         <Preset Type="PresetValue" Library="Ntve" Id="D6EA4D09"/>
+    </Element>
+    <Element Type="FunctionCall" Id="BBE59F36">
+        <FunctionDef Type="FunctionDef" Library="Ntve" Id="00000123"/>
+        <ScriptCode>
+            lib3_gs_Cohort cohort;
+            int cnt = UnitGroupCount(cohort.lv_legionaries, c_unitCountAll);
+            sys(&quot;cohort&apos;s cnt: &quot; + IntToString(cnt), 1);
+        </ScriptCode>
     </Element>
     <Element Type="FunctionCall" Id="95626354">
         <FunctionDef Type="FunctionDef" Library="Ntve" Id="F247156C"/>

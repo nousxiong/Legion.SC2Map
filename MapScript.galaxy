@@ -429,6 +429,10 @@ void lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int
     // Automatic Variable Declarations
     // Implementation
     libNtve_gf_CreateUnitsWithDefaultFacing(1, lp_centurionType, 0, lp_playerIndex, lp_spawnPosition);
+    //err("hi", 1);
+    //int i = 0;
+    //lib3_gs_Cohort cohort;
+    //unit cent = cohort.lv_centurion;
 }
 
 trigger auto_lib3_gf_SpawnSoldiersThread_Trigger = null;
@@ -795,6 +799,9 @@ void gf_CreatePlayer () {
     // Variable Initialization
 
     // Implementation
+    lib3_gs_Cohort cohort;
+    int cnt = UnitGroupCount(cohort.lv_legionaries, c_unitCountAll);
+    sys("cohort's cnt: " + IntToString(cnt), 1);
     libNtve_gf_CreateUnitsWithDefaultFacing(1, "SwarmQueen", 0, 1, PointFromId(1109194472));
     lv_player = UnitLastCreated();
     UnitSetPropertyFixed(lv_player, c_unitPropMovementSpeed, 6.0);

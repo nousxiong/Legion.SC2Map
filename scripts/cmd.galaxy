@@ -13,7 +13,7 @@ include "scripts/util"
 void runCmd(string input, int player);
 typedef funcref<runCmd> runCmdRef;
 struct cmd {
-    string cmd;
+    string c;
     string helptext;
     runCmdRef invoke;
     bool enabled;
@@ -24,27 +24,27 @@ typedef structref<cmd> cmdRef;
 static cmd[100] cmds;
 static int cmdCount;
 
-void registerChatCommand(string cmd, string helptext, bool needsInput, bool enabled, runCmdRef run) {
+void registerChatCommand(string c, string helptext, bool needsInput, bool enabled, runCmdRef run) {
     cmds[cmdCount].invoke = run;
-    cmds[cmdCount].cmd = cmd;
+    cmds[cmdCount].c = c;
     cmds[cmdCount].helptext = helptext;
     cmds[cmdCount].needsInput = needsInput;
     cmds[cmdCount].enabled = enabled;
     cmdCount += 1;
 }
 
-static int getCommandInfo(string cmd) {
+static int getCommandInfo(string c) {
     int i;
     for (i = 0; i < cmdCount; i += 1) {
-        if ( cmds[i].cmd == cmd ) {
+        if ( cmds[i].c == c ) {
             return i;
         }
     }
     return -1;
 }
 
-bool toggleChatCommand(string cmd, bool enabled) {
-    int index = getCommandInfo(cmd);
+bool toggleChatCommand(string c, bool enabled) {
+    int index = getCommandInfo(c);
     if ( index == -1 ) { return false; }
     cmds[index].enabled = enabled;
     return true;
@@ -52,7 +52,7 @@ bool toggleChatCommand(string cmd, bool enabled) {
 
 static void invoke(cmdRef run, string input, int player) {
     if ( !run.enabled ) {
-        err("'" + run.cmd + "' is currently disabled.", player);
+        err("'" + run.c + "' is currently disabled.", player);
         return;
     }
     if ( run.needsInput == true && ( input == null || input == "" ) ) {
@@ -66,7 +66,7 @@ bool commandInvoked(bool check, bool run) {
     int player = EventPlayer();
     string msg = EventChatMessage(false);
     string input;
-    string cmd;
+    string c;
     int i;
     bool any = false;
     if ( !run ) { return true; }
@@ -74,32 +74,32 @@ bool commandInvoked(bool check, bool run) {
 
     if ( StringContains(msg, " ", c_stringAnywhere, true) ) {
         i = StringFind(msg, " ", true);
-        cmd = StringCase(StringSub(msg, 2, i - 1), false);
+        c = StringCase(StringSub(msg, 2, i - 1), false);
         input = StringSub(msg, i + 1, StringLength(msg));
     } else {
-        cmd = StringCase(StringSub(msg, 2, StringLength(msg)), false);
+        c = StringCase(StringSub(msg, 2, StringLength(msg)), false);
     }
 
-    if ( cmd == "" ) { return true; }
+    if ( c == "" ) { return true; }
 
     for (i = 0; i < cmdCount; i += 1) {
-        if ( cmds[i].cmd == cmd ) {
+        if ( cmds[i].c == c ) {
             any = true;
             invoke(cmds[i], input, player);
         }
     }
 
     if ( !any ) {
-        err("No such command ('" + cmd + "') found.", player);
+        err("No such command ('" + c + "') found.", player);
     }
 
     return true;
 }
 
-static void specificCommandHelp(string cmd, int player) {
+static void specificCommandHelp(string c, int player) {
     int i;
     bool found = false;
-    int exact = getCommandInfo(cmd);
+    int exact = getCommandInfo(c);
     string avail = "";
     if ( exact != -1 ) {
         // We found an exact match, so show the help for it.
@@ -109,9 +109,9 @@ static void specificCommandHelp(string cmd, int player) {
         for (i = 0; i < cmdCount; i += 1) {
             if (
                 cmds[i].enabled &&
-                StringContains(cmds[i].cmd, cmd, c_stringAnywhere, false)
+                StringContains(cmds[i].c, c, c_stringAnywhere, false)
             ) {
-                avail = avail + " " + cmds[i].cmd;
+                avail = avail + " " + cmds[i].c;
             }
         }
         if ( avail != "" ) {
@@ -135,7 +135,7 @@ void cmdHelp(string input, int player) {
         // -help
         for (i = 0; i < cmdCount; i += 1) {
             if ( cmds[i].enabled ) {
-                avail = avail + " " + cmds[i].cmd;
+                avail = avail + " " + cmds[i].c;
             }
         }
         if ( avail != "" ) {
