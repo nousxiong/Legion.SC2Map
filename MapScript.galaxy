@@ -369,21 +369,34 @@ void lib4_InitLib () {
 //--------------------------------------------------------------------------------------------------
 // Library: Legion
 //--------------------------------------------------------------------------------------------------
+// Constants
+const int lib3_gv_maxCohortSize = 10;
+
 // Structures
 struct lib3_gs_Cohort {
     unitgroup lv_legionaries;
     unit lv_centurion;
+    bool lv_using;
 };
 
 // Variable Declarations
-lib3_gs_Cohort[11] lib3_gv_cohorts;
-int lib3_gv_cohortIndex;
+int lib3_gv_cohortCursor;
+lib3_gs_Cohort[lib3_gv_maxCohortSize + 1] lib3_gv_cohorts;
+int lib3_gv_cohortSize;
+int[lib3_gv_maxCohortSize + 1] lib3_gv_idleCohortStack;
+int lib3_gv_idleCohortSize;
 int lib3_gv_legionMaxSoldierNum;
 unit lib3_gv_legionMaster;
 unitgroup lib3_gv_legionGroup;
 
 // Function Declarations
-void lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionaryCount, int lp_playerIndex, point lp_spawnPosition);
+int lib3_gf_AllocCohort ();
+void lib3_gf_DeallocCohort (int lp_cohort);
+int lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionarySize, int lp_playerIndex, point lp_spawnPosition);
+void lib3_gf_DisposeCohort (int lp_cohort);
+void lib3_gf_PushIdleCohort (int lp_idleCohort);
+int lib3_gf_PopIdleCohort ();
+bool lib3_gf_HasIdleCohort ();
 void lib3_gf_SpawnSoldiersThread ();
 void lib3_gf_FollowMasterThread ();
 void lib3_gf_AutoScaleCameraThread ();
@@ -417,22 +430,105 @@ void lib3_InitVariables () {
 
     lib3_InitVariables_completed = true;
 
-    for (init_i = 0; init_i <= 10; init_i += 1) {
+    for (init_i = 0; init_i <= lib3_gv_maxCohortSize; init_i += 1) {
         lib3_gv_cohorts[init_i].lv_legionaries = UnitGroupEmpty();
     }
     lib3_gv_legionMaxSoldierNum = 100;
     lib3_gv_legionGroup = UnitGroupEmpty();
 }
 
+// Custom Script
+//--------------------------------------------------------------------------------------------------
+// Custom Script: Bootstrap
+//--------------------------------------------------------------------------------------------------
+include "scripts/util"
+
+void lib3_InitCustomScript () {
+}
+
 // Functions
-void lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionaryCount, int lp_playerIndex, point lp_spawnPosition) {
+int lib3_gf_AllocCohort () {
+    // Variable Declarations
+    int lv_alloced;
+
+    // Automatic Variable Declarations
+    // Variable Initialization
+
+    // Implementation
+    if (lib3_gf_HasIdleCohort()) {
+        return lib3_gf_PopIdleCohort();
+    }
+    else {
+        lv_alloced = lib3_gv_cohortCursor;
+        lib3_gv_cohortCursor += 1;
+        return lv_alloced;
+    }
+}
+
+void lib3_gf_DeallocCohort (int lp_cohort) {
     // Automatic Variable Declarations
     // Implementation
+    lib3_gf_PushIdleCohort(lp_cohort);
+}
+
+int lib3_gf_CreateCohort (string lp_centurionType, string lp_legionaryType, int lp_legionarySize, int lp_playerIndex, point lp_spawnPosition) {
+    // Variable Declarations
+    int lv_newCohort;
+    int lv_index;
+
+    // Automatic Variable Declarations
+    int auto0B2A5006_ae;
+    const int auto0B2A5006_ai = 1;
+
+    // Variable Initialization
+
+    // Implementation
+    lv_newCohort = lib3_gf_AllocCohort();
     libNtve_gf_CreateUnitsWithDefaultFacing(1, lp_centurionType, 0, lp_playerIndex, lp_spawnPosition);
-    //err("hi", 1);
-    //int i = 0;
-    //lib3_gs_Cohort cohort;
-    //unit cent = cohort.lv_centurion;
+    lib3_gv_cohorts[lv_newCohort].lv_centurion = UnitLastCreated();
+    auto0B2A5006_ae = lp_legionarySize;
+    lv_index = 0;
+    for ( ; ( (auto0B2A5006_ai >= 0 && lv_index <= auto0B2A5006_ae) || (auto0B2A5006_ai < 0 && lv_index >= auto0B2A5006_ae) ) ; lv_index += auto0B2A5006_ai ) {
+        libNtve_gf_CreateUnitsWithDefaultFacing(1, lp_legionaryType, 0, lp_playerIndex, lp_spawnPosition);
+        UnitGroupAdd(lib3_gv_cohorts[lv_newCohort].lv_legionaries, UnitLastCreated());
+    }
+    lib3_gv_cohorts[lv_newCohort].lv_using = true;
+    lib3_gv_cohortSize += 1;
+    return lv_newCohort;
+}
+
+void lib3_gf_DisposeCohort (int lp_cohort) {
+    // Automatic Variable Declarations
+    // Implementation
+    UnitGroupClear(lib3_gv_cohorts[lp_cohort].lv_legionaries);
+    lib3_gv_cohorts[lp_cohort].lv_using = false;
+    lib3_gf_DeallocCohort(lp_cohort);
+    lib3_gv_cohortSize -= 1;
+}
+
+void lib3_gf_PushIdleCohort (int lp_idleCohort) {
+    // Automatic Variable Declarations
+    // Implementation
+    lib3_gv_idleCohortStack[lib3_gv_idleCohortSize] = lp_idleCohort;
+    lib3_gv_idleCohortSize += 1;
+}
+
+int lib3_gf_PopIdleCohort () {
+    // Automatic Variable Declarations
+    // Implementation
+    lib3_gv_idleCohortSize -= 1;
+    return lib3_gv_idleCohortStack[lib3_gv_idleCohortSize];
+}
+
+bool lib3_gf_HasIdleCohort () {
+    // Automatic Variable Declarations
+    // Implementation
+    if ((lib3_gv_idleCohortSize > 0)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 trigger auto_lib3_gf_SpawnSoldiersThread_Trigger = null;
@@ -526,7 +622,7 @@ bool auto_lib3_gf_AutoScaleCameraThread_TriggerFunc (bool testConds, bool runAct
         lv_soldierNum = UnitGroupCount(lib3_gv_legionGroup, c_unitCountAll);
         if ((lv_soldierNum != lv_prevSoldierNum) && (lib1_gf_IsAerialViewing() != true)) {
             lv_prevSoldierNum = lv_soldierNum;
-            lib1_gf_ScaleUpCamera((IntToFixed(lv_soldierNum)/IntToFixed(lib3_gv_legionMaxSoldierNum)/2.0));
+            lib1_gf_ScaleUpCamera((IntToFixed(lv_soldierNum)/IntToFixed(lib3_gv_legionMaxSoldierNum)/1.0));
         }
 
         Wait(0.5, c_timeGame);
@@ -635,86 +731,8 @@ void lib3_InitLib () {
 
     lib3_InitLibraries();
     lib3_InitVariables();
+    lib3_InitCustomScript();
     lib3_InitTriggers();
-}
-
-//--------------------------------------------------------------------------------------------------
-// Library: IndexStack
-//--------------------------------------------------------------------------------------------------
-// Constants
-const int lib2_gv_errcFull = -1;
-const int lib2_gv_maxSize = 10;
-
-// Structures
-struct lib2_gs_IndexStack {
-    int[11] lv_indexes;
-    int lv_size;
-};
-
-// Variable Declarations
-lib2_gs_IndexStack[lib2_gv_maxSize + 1] lib2_gv_indexStacks;
-int lib2_gv_size;
-
-// Function Declarations
-int lib2_gf_CreateIndexStack ();
-
-// Library Initialization
-void lib2_InitVariables ();
-
-//--------------------------------------------------------------------------------------------------
-// Library: IndexStack
-//--------------------------------------------------------------------------------------------------
-// External Library Initialization
-void lib2_InitLibraries () {
-    libNtve_InitVariables();
-}
-
-// Variable Initialization
-bool lib2_InitVariables_completed = false;
-
-void lib2_InitVariables () {
-    if (lib2_InitVariables_completed) {
-        return;
-    }
-
-    lib2_InitVariables_completed = true;
-
-}
-
-// Functions
-int lib2_gf_CreateIndexStack () {
-    // Variable Declarations
-    int lv_newIndex;
-
-    // Automatic Variable Declarations
-    // Variable Initialization
-
-    // Implementation
-    if ((lib2_gv_size >= lib2_gv_maxSize)) {
-        return lib2_gv_errcFull;
-    }
-    else {
-        lv_newIndex = lib2_gv_size;
-        lib2_gv_indexStacks[lv_newIndex].lv_size = 0;
-        lib2_gv_size += 1;
-        return lv_newIndex;
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-// Library Initialization
-//--------------------------------------------------------------------------------------------------
-bool lib2_InitLib_completed = false;
-
-void lib2_InitLib () {
-    if (lib2_InitLib_completed) {
-        return;
-    }
-
-    lib2_InitLib_completed = true;
-
-    lib2_InitLibraries();
-    lib2_InitVariables();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -725,7 +743,6 @@ void InitLibs () {
     lib1_InitLib();
     lib4_InitLib();
     lib3_InitLib();
-    lib2_InitLib();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -800,7 +817,9 @@ void gf_CreatePlayer () {
 
     // Implementation
     lib3_gs_Cohort cohort;
-    int cnt = UnitGroupCount(cohort.lv_legionaries, c_unitCountAll);
+    int cnt;
+    cohort.lv_legionaries = UnitGroupEmpty();
+    cnt = UnitGroupCount(cohort.lv_legionaries, c_unitCountAll);
     sys("cohort's cnt: " + IntToString(cnt), 1);
     libNtve_gf_CreateUnitsWithDefaultFacing(1, "SwarmQueen", 0, 1, PointFromId(1109194472));
     lv_player = UnitLastCreated();
@@ -809,7 +828,17 @@ void gf_CreatePlayer () {
     gv_player = lv_player;
 }
 
+trigger auto_gf_SpawnMarinesThread_Trigger = null;
+
 void gf_SpawnMarinesThread () {
+    if (auto_gf_SpawnMarinesThread_Trigger == null) {
+        auto_gf_SpawnMarinesThread_Trigger = TriggerCreate("auto_gf_SpawnMarinesThread_TriggerFunc");
+    }
+
+    TriggerExecute(auto_gf_SpawnMarinesThread_Trigger, false, false);
+}
+
+bool auto_gf_SpawnMarinesThread_TriggerFunc (bool testConds, bool runActions) {
     // Variable Declarations
     int lv_index;
 
@@ -830,13 +859,19 @@ void gf_SpawnMarinesThread () {
 
         Wait(0.1, c_timeGame);
     }
+    return true;
 }
 
 //--------------------------------------------------------------------------------------------------
 // Trigger: Main
 //--------------------------------------------------------------------------------------------------
 bool gt_Main_Func (bool testConds, bool runActions) {
+    // Variable Declarations
+    int lv_newCohort;
+
     // Automatic Variable Declarations
+    // Variable Initialization
+
     // Actions
     if (!runActions) {
         return true;
@@ -867,6 +902,13 @@ bool gt_Main_Func (bool testConds, bool runActions) {
     UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/656FDD14"));
     gf_SpawnMarinesThread();
     gf_CreateEnemies(PointFromId(464489161), 50);
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, StringExternal("Param/Value/5C460D37"));
+    lv_newCohort = lib3_gf_AllocCohort();
+    TextExpressionSetToken("Param/Expression/6E10358F", "A", IntToText(lv_newCohort));
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, TextExpressionAssemble("Param/Expression/6E10358F"));
+    lv_newCohort = lib3_gf_AllocCohort();
+    TextExpressionSetToken("Param/Expression/BB578C74", "A", IntToText(lv_newCohort));
+    UIDisplayMessage(PlayerGroupAll(), c_messageAreaSubtitle, TextExpressionAssemble("Param/Expression/BB578C74"));
     return true;
 }
 
